@@ -24,11 +24,14 @@ from sklearn.ensemble import (
     RandomForestClassifier,
 )
 import mlflow
-from urllib.parse import urlparse
+#from urllib.parse import urlparse
 
-'''import dagshub
-#dagshub.init(repo_owner='krishnaik06', repo_name='networksecurity', mlflow=True)
+import dagshub
+dagshub.init(repo_owner='SachdevaVansh', repo_name='NetworkSecurity', mlflow=True)
 
+
+
+'''
 os.environ["MLFLOW_TRACKING_URI"]="https://dagshub.com/krishnaik06/networksecurity.mlflow"
 os.environ["MLFLOW_TRACKING_USERNAME"]="krishnaik06"
 os.environ["MLFLOW_TRACKING_PASSWORD"]="7104284f1bb44ece21e0e2adb4e36a250ae3251f"
@@ -136,9 +139,9 @@ class ModelTrainer:
         #For the prediction of any new data point
         Network_Model=NetworkModel(preprocessor=preprocessor,model=best_model)
         save_object(self.model_trainer_config.trained_model_file_path,obj=NetworkModel)
-        
+
         #model pusher
-        #save_object("final_model/model.pkl",best_model)
+        save_object("final_model/model.pkl",best_model)
         
 
         ## Model Trainer Artifact
