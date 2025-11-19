@@ -1,8 +1,17 @@
-FROM python:3.10-slim-buster
+FROM python:3.10-slim-bullseye
+
 WORKDIR /app
+
+# Install system deps, then clean apt lists
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends awscli ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Python deps using build cache-friendly steps
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application files
 COPY . /app
 
-RUN apt update -y && apt install -y awscli
-
-RUN apt-get update -y && pip install -r requirements.txt
 CMD ["python3", "app.py"]
