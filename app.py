@@ -6,8 +6,8 @@ ca = certifi.where()
 
 from dotenv import load_dotenv
 load_dotenv()
-mongo_db_url = os.getenv("MONGODB_URL_KEY")
-print(mongo_db_url)
+mongo_db_url = os.getenv("MONGO_DB_URL")
+
 import pymongo
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logging.logger import logging
@@ -85,4 +85,4 @@ async def predict_route(request: Request,file: UploadFile = File(...)):
 
     
 if __name__=="__main__":
-    app_run(app,host="0.0.0.0",port=8000)
+    app_run(app,host="127.0.0.1",port=8000)
