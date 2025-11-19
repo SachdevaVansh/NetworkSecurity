@@ -1,17 +1,19 @@
-FROM python:3.10-slim-bullseye
-
-WORKDIR /app
-
-# Install system deps, then clean apt lists
-RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends awscli ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install Python deps using build cache-friendly steps
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application files
-COPY . /app
-
-CMD ["python3", "app.py"]
+FROM python:3.10-slim-buster
+USER root
+RUN mkdir /app
+COPY . /app/
+WORKDIR /app/
+RUN pip3 install -r requirements.txt
+ENV AWS_DEFAULT_REGION = "us-east-1"
+ENV BUCKET_NAME="testnetworksecurity12"
+ENV PREDICTION_BUCKET_NAME="my-network-datasource-vansh"
+ENV AIRFLOW_HOME="/app/airflow"
+ENV AIRFLOW_CORE_DAGBAG_IMPORT_TIMEOUT=1000
+ENV AIRFLOW_CORE_ENABLE_XCOM_PICKLING=True
+ENV PYTHONPATH="/app:${PYTHONPATH}"
+RUN airflow db init
+RUN airflow users create -e bh2ggsipu@gmail.com -f vansh -l sachdeva -p admin -r Admin -u admin
+RUN chmod 777 start.sh
+RUN apt update -y
+ENTRYPOINT [ "/bin/sh" ]
+CMD ["start.sh"]
