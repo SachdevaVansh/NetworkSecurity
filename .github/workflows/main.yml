@@ -80,6 +80,22 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       
+      - name: Verify Docker and ECR Login
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
+        run: |
+          docker --version
+          echo "ECR Registry: $ECR_REGISTRY"
+          echo "ECR Repository: $ECR_REPOSITORY"
+      
+      - name: Explicitly login to ECR with Docker
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          echo "Logging in to ECR registry: $ECR_REGISTRY"
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
       
       - name: Pull latest images
         env:
@@ -87,6 +103,7 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
           IMAGE_TAG: latest
         run: |
+          echo "Pulling image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
          
       #- name: Stop and remove  container if running
